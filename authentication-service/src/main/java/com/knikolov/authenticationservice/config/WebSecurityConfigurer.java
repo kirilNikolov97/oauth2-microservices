@@ -1,5 +1,6 @@
 package com.knikolov.authenticationservice.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,6 +12,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Override
     @Bean
@@ -31,11 +35,16 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
         auth
-                .inMemoryAuthentication()
-                .withUser("john.carnell").password(passwordEncoder().encode("password1")).roles("USER")
-                .and()
-                .withUser("william.woodward").password(passwordEncoder().encode("password2")).roles("USER", "ADMIN");
+                .userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder());
+
+//        auth
+//                .inMemoryAuthentication()
+//                .withUser("john.carnell").password(passwordEncoder().encode("password1")).roles("USER")
+//                .and()
+//                .withUser("william.woodward").password(passwordEncoder().encode("password2")).roles("USER", "ADMIN");
     }
 
 }

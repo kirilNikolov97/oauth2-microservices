@@ -7,6 +7,7 @@ spring:
 
 eureka:
   client:
+    fetchRegistry: true
     service-url:
       default-zone: http://localhost:8761/eureka/
 
@@ -20,6 +21,11 @@ zuul:
     authentication-service:
       path: /authentication-service/**
       service-id: authentication-service
+    car-service:
+      path: /car-service/**
+      service-id: car-service
+  host:
+    socket-timeout-millis: 1000000
 
 hystrix:
   command:
@@ -27,7 +33,4 @@ hystrix:
       execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 60000
-
-ribbon:
-  ReadTimeout: 60000
+            timeoutInMilliseconds: 1000000

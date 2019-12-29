@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
+import javax.sql.DataSource;
 import java.util.Arrays;
 
 @Configuration
@@ -37,6 +38,8 @@ public class JWTOAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Autowired
     private TokenEnhancer jwtTokenEnhancer;
 
+    @Autowired
+    private DataSource dataSource;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -58,11 +61,16 @@ public class JWTOAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 
-        clients.inMemory()
-                .withClient("eagleeye")
-                .secret(passwordEncoder.encode("thisissecret"))
-                .authorizedGrantTypes("refresh_token", "password", "client_credentials")
-                .scopes("webclient", "mobileclient");
+        clients
+                .jdbc(dataSource)
+                .passwordEncoder(passwordEncoder);
+
+
+//        clients.inMemory()
+//                .withClient("eagleeye")
+//                .secret(passwordEncoder.encode("thisissecret"))
+//                .authorizedGrantTypes("refresh_token", "password", "client_credentials")
+//                .scopes("webclient", "mobileclient");
     }
 
 }
